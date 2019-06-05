@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'conflisp/language'
 
 RSpec.describe Conflisp::Language do
@@ -7,6 +9,16 @@ RSpec.describe Conflisp::Language do
     }
   end
   let(:test_lang) { Conflisp::Language.new(registry: registry) }
+
+  describe '.define' do
+    it 'creates a new language using the DSL' do
+      my_lang = Conflisp::Language.define do
+        fn :add, ->(a, b) { a + b }
+      end
+
+      expect(my_lang.registry).to include('add' => kind_of(Proc))
+    end
+  end
 
   describe '#evaluate' do
     let(:expression) { ['add', 1, 2] }

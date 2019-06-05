@@ -30,7 +30,7 @@ gem 'conflisp'
 1.  Define your functions
 
     ```ruby
-    MyLang = Conflisp.define do
+    MyLang = Conflisp::Language.define do
       fn :add, ->(a, b) { a + b }
       fn :subtract, ->(a, b) { a - b }
     end
@@ -62,7 +62,7 @@ when you need to:
 Your functions can also refer to other functions using the `resolve` method:
 
 ```ruby
-MyLang = Conflisp.define do
+MyLang = Conflisp::Language.define do
   fn :add, ->(a, b) { a + b }
 
   fn :add_twice, ->(a, b) do
@@ -83,7 +83,7 @@ their functions.
 You can also `extend` your languages to add new functions:
 
 ```ruby
-BaseLang = Conflisp.define do
+BaseLang = Conflisp::Language.define do
   fn :add, ->(a, b) { a + b }
 end
 
