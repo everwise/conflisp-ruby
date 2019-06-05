@@ -80,6 +80,21 @@ opinionated on the ordering of the arguments to your functions (think `lodash`
 vs. `lodash/fp`), so it is up to the application developer to implement all of
 their functions.
 
+You can also `extend` your languages to add new functions:
+
+```ruby
+BaseLang = Conflisp.define do
+  fn :add, ->(a, b) { a + b }
+end
+
+# NewLang will also have access to the `add` method.
+NewLang = BaseLang.extend do
+  fn :foo, ->() do
+    # ...
+  end
+end
+```
+
 ## License
 
 MIT License

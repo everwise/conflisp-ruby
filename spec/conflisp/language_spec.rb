@@ -23,4 +23,17 @@ RSpec.describe Conflisp::Language do
       test_lang.evaluate(expression)
     end
   end
+
+  describe '#extend' do
+    it 'allows you to create new languages' do
+      my_lang = test_lang.extend do
+        fn :subtract, ->(a, b) { a - b }
+      end
+
+      expect(my_lang.registry).to include(
+        'add' => kind_of(Proc),
+        'subtract' => kind_of(Proc)
+      )
+    end
+  end
 end
