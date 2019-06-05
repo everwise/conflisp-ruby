@@ -3,5 +3,5 @@
 require 'conflisp/conflisp_error'
 
 module Conflisp
-  class MethodMissing < Conflisp::ConflispError; end
+  MethodMissing = Class.new(ConflispError)
 end
