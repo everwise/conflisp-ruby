@@ -1,0 +1,32 @@
+version: 2.0
+
+jobs:
+  test:
+    docker:
+      - image: ruby:2.6
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-bundle-{{ .Branch }}-{{ checksum "conflisp.gemspec" }}
+            - v1-bundle-{{ .Branch }}-
+            - v1-bundle-
+
+      - run: bundle install
+
+      - save_cache:
+          key: v1-bundle-{{ .Branch }}-{{ checksum "conflisp.gemspec" }}
+          paths:
+            - ~/conflisp-ruby/vendor/bundle
+
+      - run: bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o tmp/junit.xml
+
+      - store_test_results:
+          path: tmp
+
+workflows:
+  version: 2
+  continuous_integration:
+    jobs:
+      - test
