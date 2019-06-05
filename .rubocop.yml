@@ -1,0 +1,16 @@
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/BlockDelimiters:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/Lambda:
+  EnforcedStyle: literal
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Style/WordArray:
+  EnforcedStyle: brackets

@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
 require 'conflisp/conflisp_error'
 
-class Conflisp::MethodMissing < Conflisp::ConflispError; end
+module Conflisp
+  class MethodMissing < Conflisp::ConflispError; end
+end

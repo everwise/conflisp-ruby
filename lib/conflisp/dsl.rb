@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module Conflisp
+  # A nice helper DSL for building up Conflisp languages
   class DSL
     attr_reader :registry
 

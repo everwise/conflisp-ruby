@@ -22,6 +22,8 @@ jobs:
 
       - run: bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o tmp/junit.xml
 
+      - run: bundle exec rubocop
+
       - store_test_results:
           path: tmp
 

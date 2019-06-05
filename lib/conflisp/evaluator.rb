@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'conflisp/method_missing'
 
 module Conflisp
+  # Evaluator takes s-expressions and resolves them into Ruby values
   class Evaluator
     attr_reader :registry, :globals
 
@@ -9,7 +12,7 @@ module Conflisp
       @globals = globals
     end
 
-    def resolve(expression)
+    def resolve(expression) # rubocop:disable Metrics/MethodLength
       case expression
       when Array
         # In Lisp, Arrays are function calls
@@ -34,12 +37,12 @@ module Conflisp
       end
     end
 
-    def fn_defined?(fn)
-      registry.key?(fn)
+    def fn_defined?(fn_name)
+      registry.key?(fn_name)
     end
 
-    def apply(fn, *args)
-      instance_exec(*args, &registry[fn])
+    def apply(fn_name, *args)
+      instance_exec(*args, &registry[fn_name])
     end
   end
 end

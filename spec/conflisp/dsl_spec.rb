@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'conflisp/dsl'
 
 RSpec.describe Conflisp::DSL do

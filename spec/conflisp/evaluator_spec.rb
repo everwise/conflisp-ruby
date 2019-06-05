@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'conflisp/evaluator'
 
 RSpec.describe Conflisp::Evaluator do
@@ -28,9 +30,9 @@ RSpec.describe Conflisp::Evaluator do
 
     it 'supports JSON objects' do
       expression = {
-        'foo' => ['add', 1, 2],
+        'foo' => ['add', 1, 2]
       }
-      expect(evaluator.resolve(expression)).to eq({ 'foo' => 3 })
+      expect(evaluator.resolve(expression)).to eq('foo' => 3)
     end
 
     context 'when calling nonexistent functions' do
