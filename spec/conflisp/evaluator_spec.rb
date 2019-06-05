@@ -35,7 +35,7 @@ RSpec.describe Conflisp::Evaluator do
 
     context 'when calling nonexistent functions' do
       it 'throws an error' do
-        message = 'Unkown fn nonexistent in expression ["nonexistent", 1, 2]'
+        message = 'Unknown fn nonexistent in expression ["nonexistent", 1, 2]'
         expect {
           evaluator.resolve(['nonexistent', 1, 2])
         }.to raise_error(Conflisp::MethodMissing, message)

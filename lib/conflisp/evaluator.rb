@@ -23,7 +23,7 @@ module Conflisp
         else
           # TODO: It would be nice to get error messages with a stacktrace or at
           # least some context about the parent expressions
-          raise MethodMissing, "Unkown fn #{fn} in expression #{expression}"
+          raise MethodMissing, "Unknown fn #{fn} in expression #{expression}"
         end
       when Hash
         expression.transform_values do |value|
