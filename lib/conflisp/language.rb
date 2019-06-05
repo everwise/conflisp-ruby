@@ -5,6 +5,11 @@ module Conflisp
   class Language
     attr_reader :registry
 
+    def self.define(&block)
+      method_registry = DSL.define(&block)
+      new(registry: method_registry)
+    end
+
     def initialize(registry:)
       @registry = registry
     end
