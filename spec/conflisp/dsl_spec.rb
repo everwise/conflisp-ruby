@@ -5,14 +5,12 @@ require 'conflisp/dsl'
 RSpec.describe Conflisp::DSL do
   describe '.define' do
     it 'allows you to define methods' do
+      my_method = proc {}
       registry = described_class.define do
-        fn :my_method, ->(a) do
-          a
-        end
+        fn :my_method, my_method
       end
 
-      expect(registry).to include('my_method' => kind_of(Proc))
-      expect(registry['my_method'].call(:foo)).to eq(:foo)
+      expect(registry).to include('my_method' => my_method)
     end
   end
 end
