@@ -3,20 +3,22 @@
 require 'conflisp/language'
 
 RSpec.describe Conflisp::Language do
+  let(:add) { proc {} }
   let(:registry) do
     {
-      'add' => ->(a, b) { a + b }
+      'add' => add
     }
   end
   let(:test_lang) { Conflisp::Language.new(registry: registry) }
 
   describe '.define' do
     it 'creates a new language using the DSL' do
+      add = proc {}
       my_lang = Conflisp::Language.define do
-        fn :add, ->(a, b) { a + b }
+        fn :add, add
       end
 
-      expect(my_lang.registry).to include('add' => kind_of(Proc))
+      expect(my_lang.registry).to include('add' => add)
     end
   end
 
@@ -38,13 +40,14 @@ RSpec.describe Conflisp::Language do
 
   describe '#extend' do
     it 'allows you to create new languages' do
+      subtract = proc {}
       my_lang = test_lang.extend do
-        fn :subtract, ->(a, b) { a - b }
+        fn :subtract, subtract
       end
 
       expect(my_lang.registry).to include(
-        'add' => kind_of(Proc),
-        'subtract' => kind_of(Proc)
+        'add' => add,
+        'subtract' => subtract
       )
     end
   end
