@@ -53,7 +53,10 @@ workflows:
   version: 2
   continuous_integration:
     jobs:
-      - test
+      - test:
+          filters:
+            tags:
+              only: /.*/
 
       - deploy:
           filters:
