@@ -95,6 +95,96 @@ NewLang = BaseLang.extend do
 end
 ```
 
+## Example language
+
+```ruby
+MyLang = Conflisp::Language.define do
+  # Without this we wouldn't be able to express arrays
+  fn :list, ->(*values) do
+    values
+  end
+
+  fn :'==', ->(left, right) do
+    left == right
+  end
+
+  fn :'!=', ->(left, right) do
+    left != right
+  end
+
+  # Boolean
+
+  fn :and, ->(*values) do
+    raise ArgumentError, 'and requires at least 2 arguments' if values.size < 2
+
+    values.reduce do |prev, value|
+      prev && value
+    end
+  end
+
+  fn :or, ->(*values) do
+    raise ArgumentError, 'or requires at least 2 arguments' if values.size < 2
+
+    values.reduce do |prev, value|
+      prev || value
+    end
+  end
+
+  # Mathematics
+
+  fn :'<=', ->(left, right) do
+    left <= right
+  end
+
+  fn :'>=', ->(left, right) do
+    left >= right
+  end
+
+  # Collections
+
+  fn :dig, ->(collection, *paths) do
+    collection.dig(*paths)
+  end
+
+  # Special
+
+  # This just a wrapper that gives us access to some config passed in through globals
+  fn :config, ->(*keys) do
+    resolve(['global', 'config']).dig(*keys)
+  end
+end
+```
+
+Then you could run a complex expression like this:
+
+```ruby
+> MyLang.evalute(
+    [
+      'join',
+      ' ',
+      [
+        'or',
+        ['and', ['>=', ['config', 'current_hour'], 19], 'Good evening'],
+        ['and', ['>=', ['config', 'current_hour'], 13], 'Howdy'],
+        ['and', ['>=', ['config', 'current_hour'], 11], 'Happy noon'],
+        ['and', ['>=', ['config', 'current_hour'], 9], "G'day"],
+        'Hello'
+      ],
+      ['config', 'user', 'name']
+    ]
+    globals: {
+      'config' => {
+        'current_hour' => Time.now.hour, # 14
+        'user' => {
+          'name' => 'Billy'
+        }
+      }
+    }
+  )
+=> "Howdy Billy"
+```
+
+
 ## License
 
 MIT License
