@@ -20,6 +20,14 @@ RSpec.describe Conflisp::Evaluator do
       expect(evaluator.resolve(['add', ['add', 1, 2], 3])).to eq(6)
     end
 
+    # it 'can evaluate nested expressions of arbitrary depth' do
+    #   expression = ['add', 0, 1]
+    #   3843.times do
+    #     expression = ['add', expression, 1]
+    #   end
+    #   expect(evaluator.resolve(expression)).to eq(3844)
+    # end
+
     it 'supports JSON scalar values' do
       expect(evaluator.resolve('a')).to eq('a')
       expect(evaluator.resolve(1)).to eq(1)
