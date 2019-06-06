@@ -4,6 +4,7 @@ jobs:
   test:
     docker:
       - image: ruby:2.6
+
     steps:
       - checkout
 
@@ -27,8 +28,39 @@ jobs:
       - store_test_results:
           path: tmp
 
+  # Based on https://medium.com/@pezholio/publishing-rubygems-using-circle-ci-2-0-1dbf06ae9942
+  deploy:
+    docker:
+      - image: ruby:2.6
+
+    steps:
+      - checkout
+
+      - run:
+          name: Setup Rubygems
+          command: |
+            mkdir ~/.gem
+            echo -e "---\r\n:rubygems_api_key: $RUBYGEMS_API_KEY" > ~/.gem/credentials
+            chmod 0600 ~/.gem/credentials
+
+      - deploy:
+          name: Publish to Rubygems
+          command: |
+            gem build conflisp.gemspec
+            gem push "conflisp-$(git describe --tags).gem"
+
 workflows:
   version: 2
   continuous_integration:
     jobs:
       - test
+
+      - deploy:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+          requires:
+            - test
+          context: rubygems
