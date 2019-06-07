@@ -20,6 +20,9 @@ RSpec.describe Conflisp::Evaluator do
       expect(evaluator.resolve(['add', ['add', 1, 2], 3])).to eq(6)
     end
 
+    # The Evaluator#resolve method is susceptible to stack overflows.
+    # The test below uncovers that.
+    #
     # it 'can evaluate nested expressions of arbitrary depth' do
     #   expression = ['add', 0, 1]
     #   3843.times do
