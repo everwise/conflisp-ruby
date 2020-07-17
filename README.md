@@ -40,7 +40,7 @@ gem 'conflisp'
 
     ```ruby
     > MyLang.evaluate(['add', 2, ['subtract', 3, 1]])
-    => 3
+    => 4
     ```
 
 You can pass in variables into the evaluator and you will have access to them
