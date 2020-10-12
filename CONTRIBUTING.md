@@ -38,11 +38,11 @@ Steps:
 2.  Tag the version
 
     ```bash
-    $ git tag -a 1.0.1
+    git tag -a 1.0.1
     ```
 
 3.  Push to Github
 
     ```bash
-    $ git push origin 1.0.1
+    git push origin 1.0.1
     ```
