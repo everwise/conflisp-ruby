@@ -11,7 +11,7 @@ change, please consider opening an issue to discuss it first.
 Install the dependencies:
 
 ```bash
-$ bundle
+bundle
 ```
 
 Done.
@@ -23,7 +23,7 @@ We have 100% test coverage using rspec and SimpleCov.
 You can run the tests by simply running
 
 ```bash
-$ rspec
+rspec
 ```
 
 ## Deploying

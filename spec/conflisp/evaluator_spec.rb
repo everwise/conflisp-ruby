@@ -46,15 +46,6 @@ RSpec.describe Conflisp::Evaluator do
       expect(evaluator.resolve(expression)).to eq('foo' => 3)
     end
 
-    context 'when calling nonexistent functions' do
-      it 'throws an error' do
-        message = 'Unknown fn nonexistent in expression ["nonexistent", 1, 2]'
-        expect {
-          evaluator.resolve(['nonexistent', 1, 2])
-        }.to raise_error(Conflisp::MethodMissing, message)
-      end
-    end
-
     context 'when passing in globals' do
       let(:globals) do
         {
@@ -86,6 +77,84 @@ RSpec.describe Conflisp::Evaluator do
 
       it 'will allow you to resolve expressions' do
         expect(evaluator.resolve(['add2', 1, 2])).to eq(3)
+      end
+    end
+
+    context 'when calling nonexistent functions' do
+      let(:expr) { ['nonexistent', 1, 2] }
+
+      it 'raises a Conflisp::MethodMissing error' do
+        expect {
+          evaluator.resolve(expr)
+        }.to raise_error(Conflisp::MethodMissing)
+      end
+
+      it 'includes a stacktrace in the message' do
+        expect {
+          evaluator.resolve(expr)
+        }.to(raise_error { |error|
+          message = <<~TXT
+            Unknown fn `nonexistent`
+              in expression ["nonexistent", 1, 2]
+          TXT
+          expect(error.message).to eq(message.strip)
+        })
+      end
+    end
+
+    context 'when there is an error in execution' do
+      let(:registry) do
+        {
+          'add' => ->(a, b) { a + b },
+          'divide' => ->(a, b) { a / b }
+        }
+      end
+
+      let(:expr) do
+        {
+          'foo' => [
+            'add',
+            1,
+            [
+              'divide',
+              1,
+              [
+                'add',
+                -1,
+                1
+              ]
+            ]
+          ]
+        }
+      end
+
+      it 'raises a Conflisp::ConflispError' do
+        expect {
+          evaluator.resolve(expr)
+        }.to raise_error(Conflisp::RuntimeError)
+      end
+
+      it 'includes the original error in the exception' do
+        expect {
+          evaluator.resolve(expr)
+        }.to(raise_error { |error|
+          expect(error.original_error).to be_a(ZeroDivisionError)
+        })
+      end
+
+      it 'includes a stacktrace in the message' do
+        expect {
+          evaluator.resolve(expr)
+        }.to(raise_error { |error|
+          message = <<~TXT
+            ZeroDivisionError: divided by 0
+              while evaluating ["divide", 1, 0]
+              in expression ["divide", 1, ["add", -1, 1]]
+              in expression ["add", 1, ["divide", 1, ["add", -1, 1]]]
+              in expression {"foo"=>["add", 1, ["divide", 1, ["add", -1, 1]]]}
+          TXT
+          expect(error.message).to eq(message.strip)
+        })
       end
     end
   end

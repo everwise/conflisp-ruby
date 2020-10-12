@@ -184,6 +184,13 @@ Then you could run a complex expression like this:
 => "Howdy Billy"
 ```
 
+## Errors
+
+When evaluating Conflisp expressions, there are two types of errors that can be
+raised:
+
+-   `Conflisp::MethodMissing` - raised if a method isn't defined in the language
+-   `Conflisp::RuntimeError` - raised if there was an error during evaluation
 
 ## License
 
