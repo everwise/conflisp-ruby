@@ -19,5 +19,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3.7.0'
   s.add_development_dependency 'rspec_junit_formatter', '~> 0.4.1'
   s.add_development_dependency 'rubocop', '~> 0.93.1'
-  s.add_development_dependency 'simplecov', '~> 0.16.1'
+  s.add_development_dependency 'simplecov', '~> 0.19.0'
+  s.add_development_dependency 'simplecov-lcov', '~> 0.8.0'
 end

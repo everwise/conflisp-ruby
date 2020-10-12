@@ -1,10 +1,20 @@
 # frozen_string_literal: true
 
 require 'simplecov'
+require 'simplecov-lcov'
+
+SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
+COVERAGE_FORMATTER = SimpleCov::Formatter::MultiFormatter.new(
+  [
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::LcovFormatter
+  ]
+)
 
 SimpleCov.start do
   add_filter '/spec/'
   minimum_coverage 100
+  formatter COVERAGE_FORMATTER
 end
 
 RSpec.configure do |config|
