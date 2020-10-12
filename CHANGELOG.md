@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 (unreleased)
+## 2.0.0 (2020-10-12)
 
 -   **BREAKING CHANGE** Drop support for Ruby &lt; 2.5
 -   Add stack traces when there is an error during evaluation.

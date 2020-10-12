@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = 'conflisp'
-  s.version = '1.0.0'
+  s.version = '2.0.0'
   s.license = 'MIT'
   s.summary = 'A tool for building JSON-serializable lisps.'
   s.homepage = 'https://github.com/everwise/conflisp'

@@ -196,4 +196,4 @@ raised:
 
 MIT License
 
-Copyright © 2019 [Everwise](https://github.com/everwise)
+Copyright © 2020 [Everwise](https://github.com/everwise)
