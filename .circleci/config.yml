@@ -21,12 +21,27 @@ jobs:
           paths:
             - ~/conflisp-ruby/vendor/bundle
 
-      - run: bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o tmp/junit.xml
+      - run:
+          name: Run tests
+          command: |
+            bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o tmp/junit.xml
 
-      - run: bundle exec rubocop
+      - run:
+          name: Run linter
+          command: |
+            bundle exec rubocop
+
+      # Store the coverage artifacts in case we want to review them
+      - store_artifacts:
+          path: coverage
 
       - store_test_results:
           path: tmp
+
+      - run:
+          name: Send Coverage to Codacy
+          command: |
+            bash <(curl -Ls https://coverage.codacy.com/get.sh) report --coverage-reports coverage/lcov/project.lcov
 
   # Based on https://medium.com/@pezholio/publishing-rubygems-using-circle-ci-2-0-1dbf06ae9942
   deploy:
