@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'conflisp/method_missing'
+require 'conflisp/runtime_error'
 
 module Conflisp
   # Evaluator takes s-expressions and resolves them into Ruby values
@@ -16,17 +17,13 @@ module Conflisp
       case expression
       when Array
         # In Lisp, Arrays are function calls
-        fn, *raw_args = expression
-        fn = fn.to_s
+        fn_name, *raw_args = expression
+        fn_name = fn_name.to_s
         args = raw_args.map { |arg| resolve(arg) }
-        if fn == 'global'
+        if fn_name == 'global'
           globals.dig(*args)
-        elsif fn_defined?(fn)
-          apply(fn, *args)
         else
-          # TODO: It would be nice to get error messages with a stacktrace or at
-          # least some context about the parent expressions
-          raise MethodMissing, "Unknown fn #{fn} in expression #{expression}"
+          apply(fn_name, *args)
         end
       when Hash
         expression.transform_values do |value|
@@ -35,14 +32,20 @@ module Conflisp
       else
         expression
       end
-    end
-
-    def fn_defined?(fn_name)
-      registry.key?(fn_name)
+    rescue Conflisp::ConflispError => e
+      e.conflisp_stack << expression
+      raise e
     end
 
     def apply(fn_name, *args)
-      instance_exec(*args, &registry[fn_name])
+      method = registry[fn_name]
+      raise Conflisp::MethodMissing, fn_name unless method
+
+      begin
+        instance_exec(*args, &method)
+      rescue StandardError => e
+        raise Conflisp::RuntimeError.new(e, [fn_name, *args])
+      end
     end
   end
 end
