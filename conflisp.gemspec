@@ -14,6 +14,8 @@ Gem::Specification.new do |s|
     *Dir['lib/conflisp/*.rb']
   ]
 
+  s.required_ruby_version = '>= 2.5'
+
   s.add_development_dependency 'rspec', '~> 3.7.0'
   s.add_development_dependency 'rspec_junit_formatter', '~> 0.4.1'
   s.add_development_dependency 'rubocop', '~> 0.71.0'

@@ -93,14 +93,10 @@ RSpec.describe Conflisp::Evaluator do
         expect {
           evaluator.resolve(expr)
         }.to(raise_error { |error|
-          # Using <<~ would require minimum Ruby 2.3, but it seems silly to add
-          # that restriction just for the tests.
-          # rubocop:disable Layout/IndentHeredoc
-          message = <<-TXT
-Unknown fn `nonexistent`
-  in expression ["nonexistent", 1, 2]
+          message = <<~TXT
+            Unknown fn `nonexistent`
+              in expression ["nonexistent", 1, 2]
           TXT
-          # rubocop:enable Layout/IndentHeredoc
           expect(error.message).to eq(message.strip)
         })
       end
@@ -150,17 +146,13 @@ Unknown fn `nonexistent`
         expect {
           evaluator.resolve(expr)
         }.to(raise_error { |error|
-          # Using <<~ would require minimum Ruby 2.3, but it seems silly to add
-          # that restriction just for the tests.
-          # rubocop:disable Layout/IndentHeredoc
-          message = <<-TXT
-ZeroDivisionError: divided by 0
-  while evaluating ["divide", 1, 0]
-  in expression ["divide", 1, ["add", -1, 1]]
-  in expression ["add", 1, ["divide", 1, ["add", -1, 1]]]
-  in expression {"foo"=>["add", 1, ["divide", 1, ["add", -1, 1]]]}
+          message = <<~TXT
+            ZeroDivisionError: divided by 0
+              while evaluating ["divide", 1, 0]
+              in expression ["divide", 1, ["add", -1, 1]]
+              in expression ["add", 1, ["divide", 1, ["add", -1, 1]]]
+              in expression {"foo"=>["add", 1, ["divide", 1, ["add", -1, 1]]]}
           TXT
-          # rubocop:enable Layout/IndentHeredoc
           expect(error.message).to eq(message.strip)
         })
       end
