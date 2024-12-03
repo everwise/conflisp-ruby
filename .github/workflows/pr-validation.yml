@@ -19,11 +19,9 @@ on:
 jobs:
 
     test:
-        #needs: build 
-        #Build job is to be executed only for pull_request events
         if: ${{ github.event_name == 'pull_request' }}
         uses: everwise/github-workflows/.github/workflows/test-conflisp.yml@TECHOPS-1811
-
+        
     deploy:
         #Deploy job is to be executed only for workflow_dispatch events and when a pull request is merged into the dev branch
         #needs: build
