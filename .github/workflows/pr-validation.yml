@@ -1,0 +1,35 @@
+name: Build and Deploy
+
+on:
+    pull_request:
+        types: [opened, reopened, edited, synchronize]
+    workflow_dispatch:
+        inputs:
+            branch:
+                description: 'Branch to deploy'
+                required: true
+                default: 'dev'
+            environment:
+                description: environment to deploy
+                required: true
+                type: choice
+                options:
+                  - dev
+                  - prod
+jobs:
+
+    test:
+        #needs: build 
+        #Build job is to be executed only for pull_request events
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: everwise/github-workflows/.github/workflows/test-conflisp.yml@TECHOPS-1811
+
+    deploy:
+        #Deploy job is to be executed only for workflow_dispatch events and when a pull request is merged into the dev branch
+        #needs: build
+        if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.ref_name == 'dev')) }} 
+        uses: everwise/github-workflows/.github/workflows/deploy-conflisp.yml@TECHOPS-1811
+        with:
+            branch: ${{ github.ref_name }}
+            environment: ${{ github.ref_name == 'master' && 'prod' || 'dev' }}
+        secrets: inherit
