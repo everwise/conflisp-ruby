@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
     pull_request:
-        types: [opened, reopened, edited, synchronize]
+        types: [opened, reopened, edited]
     workflow_dispatch:
         inputs:
             branch:
@@ -54,13 +54,13 @@ jobs:
         run: bundle exec rubocop
 
       - name: Store coverage artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage
 
       - name: Store test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: tmp
