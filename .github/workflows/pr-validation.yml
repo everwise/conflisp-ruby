@@ -17,17 +17,69 @@ on:
                   - dev
                   - prod
 jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    test:
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: everwise/github-workflows/.github/workflows/test-vieques.yml@TECHOPS-1811
-        
-    deploy:
-        #Deploy job is to be executed only for workflow_dispatch events and when a pull request is merged into the dev branch
-        #needs: build
-        if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.ref_name == 'dev')) }} 
-        uses: everwise/github-workflows/.github/workflows/deploy-conflisp.yml@TECHOPS-1811
+      - name: Restore bundle cache
+        uses: actions/cache@v2
         with:
-            branch: ${{ github.ref_name }}
-            environment: ${{ github.ref_name == 'master' && 'prod' || 'dev' }}
-        secrets: inherit
+          path: vendor/bundle
+          key: v1-bundle-${{ github.ref }}-${{ hashFiles('conflisp.gemspec') }}
+          restore-keys: |
+            v1-bundle-${{ github.ref }}-
+            v1-bundle-
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Save bundle cache
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: v1-bundle-${{ github.ref }}-${{ hashFiles('conflisp.gemspec') }}
+
+      - name: Run tests
+        run: |
+          bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o tmp/junit.xml
+
+      - name: Run linter
+        run: bundle exec rubocop
+
+      - name: Store coverage artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage
+
+      - name: Store test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: tmp
+
+      - name: Send Coverage to Codacy
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --coverage-reports coverage/lcov/project.lcov
+
+    # test:
+    #     if: ${{ github.event_name == 'pull_request' }}
+    #     uses: everwise/github-workflows/.github/workflows/test-vieques.yml@TECHOPS-1811
+        
+    # deploy:
+    #     #Deploy job is to be executed only for workflow_dispatch events and when a pull request is merged into the dev branch
+    #     #needs: build
+    #     if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.ref_name == 'dev')) }} 
+    #     uses: everwise/github-workflows/.github/workflows/deploy-conflisp.yml@TECHOPS-1811
+    #     with:
+    #         branch: ${{ github.ref_name }}
+    #         environment: ${{ github.ref_name == 'master' && 'prod' || 'dev' }}
+    #     secrets: inherit
+    
