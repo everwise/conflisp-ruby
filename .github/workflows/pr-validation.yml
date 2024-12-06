@@ -2,23 +2,11 @@ name: Build and Deploy
 
 on:
     pull_request:
-        types: [opened, reopened, edited]
-    workflow_dispatch:
-        inputs:
-            branch:
-                description: 'Branch to deploy'
-                required: true
-                default: 'dev'
-            environment:
-                description: environment to deploy
-                required: true
-                type: choice
-                options:
-                  - dev
-                  - prod
+        types: [opened, reopened, edited, synchronize]
+
 jobs:
   tests:
-    runs-on: self-runners
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -64,22 +52,3 @@ jobs:
         with:
           name: test-results
           path: tmp
-
-      # - name: Send Coverage to Codacy
-      #   run: |
-      #     bash <(curl -Ls https://coverage.codacy.com/get.sh) report --coverage-reports coverage/lcov/project.lcov
-
-    # test:
-    #     if: ${{ github.event_name == 'pull_request' }}
-    #     uses: everwise/github-workflows/.github/workflows/test-vieques.yml@TECHOPS-1811
-        
-    # deploy:
-    #     #Deploy job is to be executed only for workflow_dispatch events and when a pull request is merged into the dev branch
-    #     #needs: build
-    #     if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.ref_name == 'dev')) }} 
-    #     uses: everwise/github-workflows/.github/workflows/deploy-conflisp.yml@TECHOPS-1811
-    #     with:
-    #         branch: ${{ github.ref_name }}
-    #         environment: ${{ github.ref_name == 'master' && 'prod' || 'dev' }}
-    #     secrets: inherit
-    
