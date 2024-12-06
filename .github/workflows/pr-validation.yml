@@ -65,9 +65,9 @@ jobs:
           name: test-results
           path: tmp
 
-      - name: Send Coverage to Codacy
-        run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --coverage-reports coverage/lcov/project.lcov
+      # - name: Send Coverage to Codacy
+      #   run: |
+      #     bash <(curl -Ls https://coverage.codacy.com/get.sh) report --coverage-reports coverage/lcov/project.lcov
 
     # test:
     #     if: ${{ github.event_name == 'pull_request' }}
