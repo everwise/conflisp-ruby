@@ -1,0 +1,54 @@
+name: Tests 
+
+on:
+    pull_request:
+        types: [opened, reopened, edited, synchronize]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Restore bundle cache
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: v1-bundle-${{ github.ref }}-${{ hashFiles('conflisp.gemspec') }}
+          restore-keys: |
+            v1-bundle-${{ github.ref }}-
+            v1-bundle-
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Save bundle cache
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: v1-bundle-${{ github.ref }}-${{ hashFiles('conflisp.gemspec') }}
+
+      - name: Run tests
+        run: |
+          bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o tmp/junit.xml
+
+      - name: Run linter
+        run: bundle exec rubocop
+
+      - name: Store coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+
+      - name: Store test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: tmp
