@@ -1,8 +1,11 @@
-name: Tests 
+name: Tests and Deploy
 
 on:
-    pull_request:
-        types: [opened, reopened, edited, synchronize]
+  push:
+    tags:
+      - '*'
+    branches-ignore:
+      - '*'
 
 jobs:
   tests:
@@ -52,3 +55,26 @@ jobs:
         with:
           name: test-results
           path: tmp
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: startsWith(github.ref, 'refs/tags/')
+    env:
+        RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+    container:
+      image: ruby:2.6
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Rubygems
+        run: |
+          mkdir ~/.gem
+          echo -e "---\r\n:rubygems_api_key: ${{ env.RUBYGEMS_API_KEY }}" > ~/.gem/credentials
+          chmod 0600 ~/.gem/credentials
+
+      - name: Deploy to Rubygems
+        run: |
+          gem build conflisp.gemspec
+          gem push "conflisp-$(git describe --tags).gem"
